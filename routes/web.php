@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test-github-api', 'TestGithubApiController@test');
 Route::get('/limit-github-api', 'TestGithubApiController@limit');
+Route::get('/test-other', 'TestGithubApiController@other');
 
 Route::get('/', function () {
     return view('welcome');
