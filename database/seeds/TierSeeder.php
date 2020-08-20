@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Tier;
 
 class TierSeeder extends Seeder
 {
@@ -11,10 +12,8 @@ class TierSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tiers')->insert([
-            ['name' => 'Beginner'],
-            ['name' => 'Intermediate'],
-            ['name' => 'Advanced'],                        
-        ]);
+        Tier::create(['name' => 'Beginner']);
+        Tier::create(['name' => 'Intermediate']);
+        Tier::create(['name' => 'Advanced']);
     }
 }
