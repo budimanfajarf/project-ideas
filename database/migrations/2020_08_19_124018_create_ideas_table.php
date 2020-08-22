@@ -15,13 +15,16 @@ class CreateIdeasTable extends Migration
     {
         Schema::create('ideas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('tier_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->unsignedTinyInteger('tier_id');
+            $table->unsignedBigInteger('ideaable_id');
+            $table->string('ideaable_type');
             $table->string('name', 70);
             $table->string('slug', 91);
-            $table->string('sort_description', 255)->nullable();
-            $table->text('description')->nullable();
-            $table->text('content')->nullable();
+            $table->string('description_sort', 255);
+            $table->text('description_required');
+            $table->text('description_additional')->nullable();
+            $table->text('description');
+            $table->text('content');
             $table->timestamps();
             $table->softDeletes();            
         });

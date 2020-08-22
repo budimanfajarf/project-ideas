@@ -3,9 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Query\Expression;
 
-class CreateSourcesTable extends Migration
+class CreateGithubsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +13,12 @@ class CreateSourcesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sources', function (Blueprint $table) {
+        Schema::create('githubs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('idea_id')->constrained();
-            $table->string('name', 25);
-            $table->string('url')->nullable();
-            $table->text('raw')->nullable();
-            $table->json('json')->nullable();
+            $table->string('file_name');
+            $table->string('raw_url');
+            $table->text('raw_content');
+            $table->json('json');
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateSourcesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sources');
+        Schema::dropIfExists('githubs');
     }
 }
