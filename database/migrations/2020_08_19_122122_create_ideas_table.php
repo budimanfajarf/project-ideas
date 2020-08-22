@@ -19,14 +19,14 @@ class CreateIdeasTable extends Migration
             $table->string('ideaable_type');
             $table->unsignedTinyInteger('tier_id');
             $table->string('name', 70);
-            $table->string('slug', 91);
+            $table->string('slug', 90)->unique();
             $table->string('description_sort', 255);
             $table->text('description_required');
             $table->text('description_additional')->nullable();
             $table->text('description');
             $table->text('content');
             $table->timestamps();
-            $table->softDeletes();            
+            $table->softDeletes();
         });
     }
 

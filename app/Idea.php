@@ -8,11 +8,7 @@ class Idea extends Model
 {
     public function tags()
     {
-        return $this->belongsToMany('App\Tag');
+        return $this->morphToMany('App\Tag', 'taggable');
     }
 
-    public function source()
-    {
-        return $this->hasOne('\App\Source');
-    }
 }

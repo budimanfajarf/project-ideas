@@ -12,9 +12,9 @@ class UserSeeder extends Seeder
     public function run()
     {
         \App\User::create([
-            'name' => 'Bot',
+            'name' => 'Budiman Fajar Firdaus',
             'email' => 'hello@budidev.com',
-            'password' => Hash::make('bot@2020'),
+            'password' => Hash::make('budi@2020'),
             'email_verified_at' => \Carbon\Carbon::now()
         ]);
     }
