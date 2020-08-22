@@ -15,9 +15,9 @@ class CreateIdeasTable extends Migration
     {
         Schema::create('ideas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('tier_id');
             $table->unsignedBigInteger('ideaable_id');
             $table->string('ideaable_type');
+            $table->unsignedTinyInteger('tier_id');
             $table->string('name', 70);
             $table->string('slug', 91);
             $table->string('description_sort', 255);
