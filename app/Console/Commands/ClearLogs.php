@@ -38,7 +38,10 @@ class ClearLogs extends Command
     public function handle()
     {
         // https://stackoverflow.com/questions/28127495/in-phps-laravel-how-do-i-clear-laravel-log
-        exec('rm ' . storage_path('logs/*.log'));
-        $this->comment('Logs have been cleared!');
+        if ($this->confirm('Do you wish to continue?')) {
+            exec('rm ' . storage_path('logs/*.log'), $output, $return_var);
+            if ($return_var == 0)
+                $this->info('Logs have been cleared!');
+        }
     }
 }
