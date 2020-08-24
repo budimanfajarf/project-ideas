@@ -42,16 +42,13 @@ class CheckApiLimit extends Command
      */
     public function handle()
     {
-        // $this->info(var_dump($this->api->getLimit($option)));
-        // $arguments = $this->arguments();
-        // $this->info(var_dump($this->argument));
-        // $this->argument('limit');
-        // $this->info($this->argument('option'));
-        // dd((bool) $this->argument('user'));
-        // dd($this->arguments());
-        // dd($this->options());
-        // return dd($this->arguments());
-
-        return dd($this->api->getRate());
+        if ($this->option('limit') && $this->option('remaining'))
+            dd(['limit' => $this->api->getRateLimit(), 'remaining' => $this->api->getRateLimitRemaining()]);
+        else if ($this->option('limit'))
+            dd($this->api->getRateLimit());
+        else if ($this->option('remaining'))
+            dd($this->api->getRateLimitRemaining());
+        else
+            dd($this->api->getRate());
     }
 }

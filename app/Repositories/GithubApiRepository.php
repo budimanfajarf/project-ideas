@@ -14,7 +14,7 @@ class GithubApiRepository
         $this->token = config('app.github_token');
     }
 
-    public function getBaseUrl ()
+    public function getBaseUrl()
     {
         return $this->baseUrl;
     }
@@ -27,20 +27,20 @@ class GithubApiRepository
         ->get("{$this->baseUrl}/{$path}");
     }
 
-    public function getRate ()
+    public function getRate()
     {
         return $this->sendRequest('rate_limit')->json();
     }
 
-    public function getRateLimit ()
+    public function getRateLimit()
     {
-        $response = $this->sendRequest('rate_limit')->json();
+        $response = $this->getRate();
         return $response['rate']['limit'];
     }
 
-    public function getRateLimitRemaining ()
+    public function getRateLimitRemaining()
     {
-        $response = $this->sendRequest('rate_limit')->json();
+        $response = $this->getRate();
         return $response['rate']['remaining'];
     }
 }
