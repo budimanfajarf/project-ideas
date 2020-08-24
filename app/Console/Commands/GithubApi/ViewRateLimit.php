@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\GithubApi;
 
 use Illuminate\Console\Command;
+use App\Console\Commands\GithubApi\GithubApi;
 
-class WeeklyUpdateFromGithub extends Command
+class ViewRateLimit extends GithubApi
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'github:update';
+    protected $signature = 'github:rate';
 
     /**
      * The console command description.
@@ -37,6 +38,8 @@ class WeeklyUpdateFromGithub extends Command
      */
     public function handle()
     {
-        return 0;
+        // dd($this->sendRequest('rate_limit')->json()['rate']);
+        $rate = $this->sendRequest('rate_limit')->json()['rate'];
+        $this->table(['limit', 'remaining', 'reset'], [$rate]);
     }
 }

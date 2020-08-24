@@ -8,19 +8,22 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Artisan;
 
 class TestGithubApiController extends Controller
 {
     public function limit()
     {
-        $baseUrl = 'https://api.github.com';
-        $token = env('GITHUB_TOKEN');
-        $response = Http::withHeaders([
-            'Authorization' => "token {$token}",
-        ])
-        ->get("{$baseUrl}/rate_limit");
+        Artisan::call('github:rate');
+        // $baseUrl = 'https://api.github.com';
+        // $token = env('GITHUB_TOKEN');
+        // $response = Http::withHeaders([
+        //     'Authorization' => "token {$token}",
+        // ])
+        // ->get("{$baseUrl}/rate_limit");
 
-        return response($response->json());
+        // return response($response->json());
+
     }
 
     public function other()
