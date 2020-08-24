@@ -4,6 +4,7 @@ namespace App\Console\Commands\GithubApi;
 
 use Illuminate\Console\Command;
 use App\Console\Commands\GithubApi\GithubApi;
+use Illuminate\Support\Str;
 
 class UpdateIdeas extends GithubApi
 {
@@ -47,7 +48,9 @@ class UpdateIdeas extends GithubApi
         $projects = $responseProjects->json();
 
         foreach ($projects as $project) {
+            // Get Tier [ideas tier]
             $tier = $project['name'];
+
             $this->info($tier);
 
             $responseIdeas = $this->sendRequestFullUrl($project['_links']['self']);
@@ -61,9 +64,52 @@ class UpdateIdeas extends GithubApi
             $bar->start();
 
             foreach ($ideas as $idea) {
-                $bar->setMessage($idea['path']);
-                $responseMarkdown = $this->sendRequestFullUrl($idea['download_url']);
-                $responseMarkdown->throw();
+                // Get Path [githubs]
+                $path = $idea['path'];
+
+                $bar->setMessage($path);
+
+                if ($idea['type'] == 'file') {
+                    $responseFile = $this->sendRequestFullUrl($idea['_links']['self']);
+                    $responseFile->throw();
+
+                    // Get Json [githubs]
+                    $json = $responseFile->json();
+
+                    // Get Content [ideas]
+                    $content = base64_decode($json['content']);
+
+                    // Get Name [ideas]
+                    $name = Str::between($content, '#', '**Tier');
+                    $name = (string) Str::of($name)->trim();
+
+                    // Get Slug [ideas]
+                    $slug = Str::of($idea['name'])->before('.md');
+                    $slug = Str::slug($slug, '-');
+
+                    // Get Description [ideas]
+                    $description = Str::after($content, $tier);
+                    $description = (string) Str::of($description)->trim();
+
+                    // Get Required Description [ideas]
+                    $requiredDescription = Str::between($content, $tier, '## User Stories');
+                    $requiredDescription = (string) Str::of($requiredDescription)->trim();
+
+                    // Get Short Description [ideas]
+                    $shortDescription = Str::of($requiredDescription)->replace("\n", ' ');
+                    $shortDescription = Str::substr($shortDescription, 0, 255);
+
+                    // Get Additional Description [ideas]
+                    $additionalDescription = Str::after($content, $requiredDescription);
+                    $additionalDescription = (string) Str::of($additionalDescription)->trim();
+
+                    // Get Commit Date [githubs]
+                    $responseCommits = $this->sendRequest("/repos/{$this->owner}/{$this->repo}/commits?path={$json['path']}&page=1&per_page=1");
+                    $responseCommits->throw();
+                    $commits = $responseCommits->json();
+                    $date = $commits[0]['commit']['author']['date'];
+                    $date = \Carbon\Carbon::parse($date)->toDateTimeString();
+                }
 
                 $bar->advance();
             }
