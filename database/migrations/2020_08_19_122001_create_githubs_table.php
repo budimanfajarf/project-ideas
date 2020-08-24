@@ -15,7 +15,7 @@ class CreateGithubsTable extends Migration
     {
         Schema::create('githubs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('path');
             $table->text('raw');
             $table->json('json');
             $table->timestamps();

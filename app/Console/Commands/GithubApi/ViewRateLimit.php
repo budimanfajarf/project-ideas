@@ -39,7 +39,7 @@ class ViewRateLimit extends GithubApi
     public function handle()
     {
         // dd($this->sendRequest('rate_limit')->json()['rate']);
-        $rate = $this->sendRequest('rate_limit')->json()['rate'];
+        $rate = $this->sendRequest('/rate_limit')->json()['rate'];
         $this->table(['limit', 'remaining', 'reset'], [$rate]);
     }
 }

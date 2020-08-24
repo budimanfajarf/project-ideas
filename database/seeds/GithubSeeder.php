@@ -12,7 +12,7 @@ class GithubSeeder extends Seeder
     public function run()
     {
         \App\Github::create([
-            'name' => 'Hello.md',
+            'path' => 'Example/Hello.md',
             'raw' => "# Hello
 
 **Tier:** 1-Beginner

@@ -21,8 +21,8 @@ class GithubApi extends Command
      */
     protected $description = 'Github Command Default';
 
-    protected $baseUrl = 'https://api.github.com';
     protected $token;
+    protected $baseUrl = 'https://api.github.com';
 
     /**
      * Create a new command instance.
@@ -55,6 +55,14 @@ class GithubApi extends Command
         return Http::withHeaders([
             'Authorization' => "token {$this->token}",
         ])
-        ->get("{$this->getBaseUrl()}/{$path}");
+        ->get("{$this->getBaseUrl()}{$path}");
+    }
+
+    protected function sendRequestFullUrl($url)
+    {
+        return Http::withHeaders([
+            'Authorization' => "token {$this->token}",
+        ])
+        ->get($url);
     }
 }
