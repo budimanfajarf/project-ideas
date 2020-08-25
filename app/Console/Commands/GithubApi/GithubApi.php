@@ -19,7 +19,7 @@ class GithubApi extends Command
      *
      * @var string
      */
-    protected $description = 'Github Command Default';
+    protected $description = 'Github API Default';
 
     protected $token;
     protected $baseUrl = 'https://api.github.com';

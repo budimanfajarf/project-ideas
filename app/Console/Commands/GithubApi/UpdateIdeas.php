@@ -20,7 +20,7 @@ class UpdateIdeas extends GithubApi
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = "Update Database fetch from Github API";
 
     protected $owner = 'florinpop17';
     protected $repo = 'app-ideas';
