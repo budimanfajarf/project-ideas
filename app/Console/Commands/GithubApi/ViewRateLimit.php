@@ -4,8 +4,9 @@ namespace App\Console\Commands\GithubApi;
 
 use Illuminate\Console\Command;
 use App\Console\Commands\GithubApi\GithubApi;
+use App\API\Github;
 
-class ViewRateLimit extends GithubApi
+class ViewRateLimit extends Command
 {
     /**
      * The name and signature of the console command.
@@ -26,9 +27,13 @@ class ViewRateLimit extends GithubApi
      *
      * @return void
      */
-    public function __construct()
+
+    protected $api;
+
+    public function __construct(Github $github)
     {
         parent::__construct();
+        $this->api = $github;
     }
 
     /**
@@ -38,8 +43,12 @@ class ViewRateLimit extends GithubApi
      */
     public function handle()
     {
-        // dd($this->sendRequest('rate_limit')->json()['rate']);
-        $rate = $this->sendRequest('/rate_limit')->json()['rate'];
-        $this->table(['limit', 'remaining', 'reset'], [$rate]);
+        // dd($this->api->getToPath('/rate_limit')->json()['rate']);
+        // $rate = $this->sendRequest('/rate_limit')->json()['rate'];
+        // $this->table(['limit', 'remaining', 'reset'], [$rate]);
+        // dd($this->api->client()->get('https://api.github.com'));
+        // dd($this->api->baseUrl);
+        dd($this->api->client()->get('https://api.github.com'));
+        // dd($this->api->client);
     }
 }
