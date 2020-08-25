@@ -13,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        \App::singleton('App\API\Github', function() {
+            return new \App\API\Github(config('services.github.token'));
+        });
     }
 
     /**
