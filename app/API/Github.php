@@ -7,39 +7,42 @@ use Illuminate\Support\Facades\Http;
 class Github
 {
     protected $token;
-    public $baseUrl;
-    public $client;
+    protected $baseUrl;
 
-    // public function __construct($token, $baseUrl, $client)
-    public function __construct($token, $baseUrl)
+    public function __construct($owner = null, $repo = null)
     {
-        $this->token = $token;
-        $this->baseUrl = $baseUrl;
-        // $this->client = $client;
-        $this->client = \App::make(Http::class);
+        $this->token = config('services.github.token');
+        $this->baseUrl = "https://".config('services.github.endpoint');
+        $this->owner = $owner;
+        $this->repo = $repo;
     }
 
-    protected function get($url)
+    public function get($path)
     {
-        // return Http::withHeaders([
-        //     'Authorization' => "token {$this->token}",
-        // ])
-        // ->get($url);
+        $url = $this->baseUrl.$path;
+        $request = Http::withHeaders([
+            'Authorization' => "token {$this->token}",
+        ])
+        ->get($url);
+
+        $request->throw();
+        return $request->json();
+    }
+
+    public function rate()
+    {
+        $rate = $this->get("/rate_limit");
+        return $rate['rate'];
     }
 
     public function contents($path = null)
     {
-
+        return $this->get("/repos/{$this->owner}/{$this->repo}/contents/{$path}");
     }
 
-    public function commits($path = null, $page=1, $perPage=1)
+    public function commits($path = null, $page=null, $perPage=null)
     {
-
-    }
-
-    public function brul()
-    {
-        return $this->baseUrl;
+        return $this->get("/repos/{$this->owner}/{$this->repo}/commits?path={$path}&page={$page}&per_page={$perPage}");
     }
 
 }

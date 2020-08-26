@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\API\Github;
 use Illuminate\Support\ServiceProvider;
-// use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Http;
 
 class GithubServiceProvider extends ServiceProvider
 {
@@ -16,10 +16,7 @@ class GithubServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(Github::class, function($app) {
-            // $client = $app->make(Http::class);
-            return new Github(config('services.github.token'), "https://api.github.com"
-            // , $client
-        );
+            return new Github();
         });
     }
 
