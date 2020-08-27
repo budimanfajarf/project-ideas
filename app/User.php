@@ -36,4 +36,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get all of the user's ideas.
+     */
+    public function ideas()
+    {
+        return $this->morphMany('App\Idea', 'ideaable');
+    }
 }

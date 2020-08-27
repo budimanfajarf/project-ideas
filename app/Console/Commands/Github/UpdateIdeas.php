@@ -2,9 +2,14 @@
 
 namespace App\Console\Commands\Github;
 
-use App\API\Github;
+use App\Tag;
+use App\Idea;
+use App\Tier;
+use App\Github;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
+use App\API\Github as GithubApi;
 
 class UpdateIdeas extends Command
 {
@@ -30,7 +35,7 @@ class UpdateIdeas extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->github = new Github('florinpop17', 'app-ideas');
+        $this->githubApi = new GithubApi('florinpop17', 'app-ideas');
     }
 
     /**
@@ -40,8 +45,13 @@ class UpdateIdeas extends Command
      */
     public function handle()
     {
-        $projects = $this->github->contents('Projects');
+        $projects = $this->githubApi->contents('Projects');
         $projects = collect($projects)->recursive();
+
+        // Get or Create Tier from Database
+        $beginner = Tier::firstOrCreate(['name' => 'Beginner']);
+        $intermediate = Tier::firstOrCreate(['name' => 'Intermediate']);
+        $advanced = Tier::firstOrCreate(['name' => 'Advanced']);
 
         foreach ($projects as $key => $project) {
             $number = $key+1;
@@ -52,7 +62,7 @@ class UpdateIdeas extends Command
 
             $this->comment($tier);
 
-            $ideas = $this->github->contents($project['path']);
+            $ideas = $this->githubApi->contents($project['path']);
 
             $bar = $this->output->createProgressBar(count($ideas));
             $bar->setFormat("%current%/%max% [%bar%] %percent:3s%% %message%");
@@ -60,26 +70,35 @@ class UpdateIdeas extends Command
             $bar->start();
 
             foreach ($ideas as $idea) {
-                // Get Path [Github]
-                $path = $idea['path'];
-
                 if ($idea['type'] != 'file') {
                     $bar->setMessage("SKIPPED: ".$idea['path']);
                     continue;
                 }
 
+                // Get Path [Github]
+                $path = $idea['path'];
+
+                // Get Name [Github]
+                $githubName = $idea['name'];
+
                 $bar->setMessage($path);
 
-                // Get Commit Date [Github]
-                $commits = $this->github->commits($path, 1, 1);
-                $date = $commits[0]['commit']['author']['date'];
-                $date = \Carbon\Carbon::parse($date)->toDateTimeString();
+                $commits = $this->githubApi->commits($path, 1, 1);
 
-                // Get JSON [Github]
-                $json = $this->github->contents($idea['path']);
+                // Get Commits Json [Github]
+                $commitsJson = collect($commits)->toJson();
+
+                // Get Commit Date [Github]
+                $date = $commits[0]['commit']['author']['date'];
+                $date = Carbon::parse($date)->toDateTimeString();
+
+                $detailIdea = $this->githubApi->contents($idea['path']);
+
+                // Get Content JSON [Github]
+                $contentJson = collect($detailIdea)->toJson();
 
                 // Get Content [Idea]
-                $content = base64_decode($json['content']);
+                $content = base64_decode($detailIdea['content']);
 
                 // Get Name [Idea]
                 $name = Str::between($content, '#', '**Tier');
@@ -104,6 +123,49 @@ class UpdateIdeas extends Command
                 // Get Additional Description [Idea]
                 $additionalDescription = Str::after($content, $requiredDescription);
                 $additionalDescription = (string) Str::of($additionalDescription)->trim();
+
+                $github = Github::updateOrCreate(
+                    [
+                        'name' => $githubName
+                    ],
+                    [
+                        'name' => $githubName,
+                        'path' => $path,
+                        'content_json' => $contentJson,
+                        'commits_json' => $commitsJson,
+                        'committed_at' => $date,
+                    ]
+                );
+
+                switch ($tier) {
+                    case 'Intermediate':
+                        $theTier = $intermediate;
+                        break;
+                    case 'Advanced':
+                        $theTier = $advanced;
+                        break;
+
+                    default:
+                        $theTier = $beginner;
+                        break;
+                }
+
+                $idea = Idea::updateOrCreate(
+                    [
+                        'ideaable_id' => $github->id,
+                        'ideaable_type' => 'App\Github'
+                    ],
+                    [
+                        'tier_id' => $theTier->id,
+                        'name' => $name,
+                        'slug' => $slug,
+                        'short_description' => $shortDescription,
+                        'required_description' => $requiredDescription,
+                        'additional_description' => $additionalDescription,
+                        'description' => $description,
+                        'content' => $content,
+                    ]
+                );
 
                 $bar->advance();
             }

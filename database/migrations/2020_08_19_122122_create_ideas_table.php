@@ -20,9 +20,9 @@ class CreateIdeasTable extends Migration
             $table->unsignedTinyInteger('tier_id');
             $table->string('name', 70);
             $table->string('slug', 90)->unique();
-            $table->string('description_sort', 255);
-            $table->text('description_required');
-            $table->text('description_additional')->nullable();
+            $table->string('short_description', 255);
+            $table->text('required_description');
+            $table->text('additional_description')->nullable();
             $table->text('description');
             $table->text('content');
             $table->timestamps();
