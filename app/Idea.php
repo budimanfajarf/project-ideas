@@ -40,6 +40,9 @@ class Idea extends Model
         return $this->morphTo();
     }
 
+    /**
+     * Get all of the idea's tags.
+     */
     public function tags()
     {
         return $this->morphToMany('App\Tag', 'taggable');

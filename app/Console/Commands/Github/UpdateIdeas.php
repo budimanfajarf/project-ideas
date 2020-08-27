@@ -25,7 +25,7 @@ class UpdateIdeas extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Update Ideas by fetch data from GitHub API. Models: Ideas, Github, Tier, Tags';
 
     /**
      * Create a new command instance.
@@ -45,149 +45,138 @@ class UpdateIdeas extends Command
      */
     public function handle()
     {
-        $projects = $this->githubApi->contents('Projects');
-        $projects = collect($projects)->recursive();
+        $apiProjects = $this->githubApi->contents('Projects');
 
         // Get or Create Tier from Database
-        $beginner = Tier::firstOrCreate(['name' => 'Beginner']);
-        $intermediate = Tier::firstOrCreate(['name' => 'Intermediate']);
-        $advanced = Tier::firstOrCreate(['name' => 'Advanced']);
+        $beginnerTier = Tier::firstOrCreate(['name' => 'Beginner']);
+        $intermediateTier = Tier::firstOrCreate(['name' => 'Intermediate']);
+        $advancedTier = Tier::firstOrCreate(['name' => 'Advanced']);
 
-        // https://laravel.com/docs/7.x/collections#lazy-collection-methods
-        // $theTags = Tag::cursor()->remember();
-        // $theTags->take(50)->all();
+        $tags = Tag::whereNotIn('name', ['C', 'Gin', 'Java', 'Spring', 'Go', 'Express', 'R'])->take(50)->get();
 
-        $theTags = Tag::whereNotIn('name', ['C', 'Gin', 'Java', 'Spring', 'Go', 'Express', 'R'])->take(50)->get();
+        foreach ($apiProjects as $apiProject) {
+            // Temporary Variables
+            $tmpGithub = $tmpIdea = [];
 
-        foreach ($projects as $key => $project) {
-            $number = $key+1;
+            // Get Tier
+            $tmpTier = $apiProject['name'];
 
-            // Get Tier [Idea]
-            $tier = $project['name'];
-            $tier = Str::after($tier, "{$number}-");
+            $this->comment($tmpTier);
 
-            $this->comment($tier);
+            $apiIdeas = $this->githubApi->contents($apiProject['path']);
 
-            $ideas = $this->githubApi->contents($project['path']);
-
-            $bar = $this->output->createProgressBar(count($ideas));
+            $bar = $this->output->createProgressBar(count($apiIdeas));
             $bar->setFormat("%current%/%max% [%bar%] %percent:3s%% %message%");
             $bar->setMessage('');
             $bar->start();
 
-            foreach ($ideas as $idea) {
-                if ($idea['type'] != 'file') {
-                    $bar->setMessage("SKIPPED: ".$idea['path']);
+            foreach ($apiIdeas as $apiIdea) {
+                if ($apiIdea['type'] != 'file') {
+                    $bar->setMessage("SKIPPED: ".$apiIdea['path']);
                     continue;
                 }
 
                 // Get Path [Github]
-                $path = $idea['path'];
+                $tmpGithub['path'] = $apiIdea['path'];
 
                 // Get Name [Github]
-                $githubName = $idea['name'];
+                $tmpGithub['name'] = $apiIdea['name'];
 
-                $bar->setMessage($path);
+                $bar->setMessage($tmpGithub['path']);
 
-                $commits = $this->githubApi->commits($path, 1, 1);
+                $apiCommits = $this->githubApi->commits($tmpGithub['path'], 1, 1);
 
                 // Get Commits Json [Github]
-                $commitsJson = collect($commits)->toJson();
+                $tmpGithub['commits_json'] = collect($apiCommits)->toJson();
 
                 // Get Commit Date [Github]
-                $date = $commits[0]['commit']['author']['date'];
-                $date = Carbon::parse($date)->toDateTimeString();
+                $tmpGithub['date'] = $apiCommits[0]['commit']['author']['date'];
+                $tmpGithub['date'] = Carbon::parse($tmpGithub['date'])->toDateTimeString();
 
-                $detailIdea = $this->githubApi->contents($idea['path']);
+                $apiDetailIdea = $this->githubApi->contents($apiIdea['path']);
 
                 // Get Content JSON [Github]
-                $contentJson = collect($detailIdea)->toJson();
+                $tmpGithub['conten_json'] = collect($apiDetailIdea)->toJson();
 
                 // Get Content [Idea]
-                $content = base64_decode($detailIdea['content']);
+                $tmpIdea['content'] = base64_decode($apiDetailIdea['content']);
 
                 // Get Name [Idea]
-                $name = Str::between($content, '#', '**Tier');
-                $name = (string) Str::of($name)->trim();
+                $tmpIdea['name'] = Str::between($tmpIdea['content'], '#', '**Tier');
+                $tmpIdea['name'] = (string) Str::of($tmpIdea['name'])->trim();
 
                 // Get Slug [Idea]
-                $slug = Str::of($idea['name'])->before('.md');
-                $slug = Str::slug($slug, '-');
+                $tmpIdea['slug'] = Str::of($apiIdea['name'])->before('.md');
+                $tmpIdea['slug'] = Str::slug($tmpIdea['slug'], '-');
 
                 // Get Description [Idea]
-                $description = Str::after($content, $tier);
-                $description = (string) Str::of($description)->trim();
+                $tmpIdea['description'] = Str::after($tmpIdea['content'], $tmpTier);
+                $tmpIdea['description'] = (string) Str::of($tmpIdea['description'])->trim();
 
                 // Get Required Description [Idea]
-                $requiredDescription = Str::between($content, $tier, '## User Stories');
-                $requiredDescription = (string) Str::of($requiredDescription)->trim();
+                $tmpIdea['required_description'] = Str::between($tmpIdea['content'], $tmpTier, '## User Stories');
+                $tmpIdea['required_description'] = (string) Str::of($tmpIdea['required_description'])->trim();
 
                 // Get Short Description [Idea]
-                $shortDescription = Str::of($requiredDescription)->replace("\n", ' ');
-                $shortDescription = Str::substr($shortDescription, 0, 255);
+                $tmpIdea['short_description'] = Str::of($tmpIdea['required_description'])->replace("\n", ' ');
+                $tmpIdea['short_description'] = Str::substr($tmpIdea['short_description'], 0, 255);
 
                 // Get Additional Description [Idea]
-                $additionalDescription = Str::after($content, $requiredDescription);
-                $additionalDescription = (string) Str::of($additionalDescription)->trim();
+                $tmpIdea['additional_description'] = Str::after($tmpIdea['content'], $tmpIdea['required_description']);
+                $tmpIdea['additional_description'] = (string) Str::of($tmpIdea['additional_description'])->trim();
 
                 $github = Github::updateOrCreate(
                     [
-                        'name' => $githubName
+                        'name' => $tmpGithub['name']
                     ],
                     [
-                        'name' => $githubName,
-                        'path' => $path,
-                        'content_json' => $contentJson,
-                        'commits_json' => $commitsJson,
-                        'committed_at' => $date,
+                        'name' => $tmpGithub['name'],
+                        'path' => $tmpGithub['path'],
+                        'content_json' => $tmpGithub['conten_json'],
+                        'commits_json' => $tmpGithub['commits_json'],
+                        'committed_at' => $tmpGithub['date'],
                     ]
                 );
 
-                switch ($tier) {
-                    case 'Intermediate':
-                        $theTier = $intermediate;
+                switch ($tmpTier) {
+                    case '2-Intermediate':
+                        $tier = $intermediateTier;
                         break;
-                    case 'Advanced':
-                        $theTier = $advanced;
+                    case '3-Advanced':
+                        $tier = $advancedTier;
                         break;
 
                     default:
-                        $theTier = $beginner;
+                        $tier = $beginnerTier;
                         break;
                 }
 
-                $theIdea = Idea::updateOrCreate(
+                $idea = Idea::updateOrCreate(
                     [
                         'ideaable_id' => $github->id,
                         'ideaable_type' => 'App\Github'
                     ],
                     [
-                        'tier_id' => $theTier->id,
-                        'name' => $name,
-                        'slug' => $slug,
-                        'short_description' => $shortDescription,
-                        'required_description' => $requiredDescription,
-                        'additional_description' => $additionalDescription,
-                        'description' => $description,
-                        'content' => $content,
+                        'tier_id' => $tier->id,
+                        'name' => $tmpIdea['name'],
+                        'slug' => $tmpIdea['slug'],
+                        'short_description' => $tmpIdea['short_description'],
+                        'required_description' => $tmpIdea['required_description'],
+                        'additional_description' => $tmpIdea['additional_description'],
+                        'description' => $tmpIdea['description'],
+                        'content' => $tmpIdea['content'],
                     ]
                 );
 
-                // $lowerCaseContent = Str::lower($content);
 
                 $tagsId = collect([]);
-                foreach ($theTags as $theTag) {
-                    // $lowerCaseTagName = Str::lower($theTag->name);
-                    // $containsTags = Str::contains($lowerCaseContent, [$lowerCaseTagName, $theTag->slug]);
-
-                    $containsTags = Str::contains($content, [$theTag->name, $theTag->slug]);
-
+                foreach ($tags as $tag) {
+                    $containsTags = Str::contains($tmpIdea['content'], [$tag->name, $tag->slug]);
                     if ($containsTags)
-                        $tagsId->push($theTag->id);
-
+                        $tagsId->push($tag->id);
                 }
 
-                $theIdea->tags()->sync($tagsId);
+                $idea->tags()->sync($tagsId);
 
                 $bar->advance();
             }
@@ -195,5 +184,7 @@ class UpdateIdeas extends Command
             $bar->finish();
             $this->line('');
         }
+
+        $this->info('Project Ideas from Github API have been updated! 😘 ☕');
     }
 }

@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
             'name' => 'Budiman Fajar Firdaus',
             'email' => 'hello@budidev.com',
             'password' => Hash::make('budi@2020'),
-            'email_verified_at' => \Carbon\Carbon::now()
+            'email_verified_at' => now()
         ]);
     }
 }

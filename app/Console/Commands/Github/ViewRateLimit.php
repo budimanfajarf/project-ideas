@@ -19,7 +19,7 @@ class ViewRateLimit extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'View Rate Limit Github API';
 
     /**
      * Create a new command instance.
