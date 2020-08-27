@@ -53,6 +53,12 @@ class UpdateIdeas extends Command
         $intermediate = Tier::firstOrCreate(['name' => 'Intermediate']);
         $advanced = Tier::firstOrCreate(['name' => 'Advanced']);
 
+        // https://laravel.com/docs/7.x/collections#lazy-collection-methods
+        // $theTags = Tag::cursor()->remember();
+        // $theTags->take(50)->all();
+
+        $theTags = Tag::whereNotIn('name', ['C', 'Gin', 'Java', 'Spring', 'Go', 'Express', 'R'])->take(50)->get();
+
         foreach ($projects as $key => $project) {
             $number = $key+1;
 
@@ -150,7 +156,7 @@ class UpdateIdeas extends Command
                         break;
                 }
 
-                $idea = Idea::updateOrCreate(
+                $theIdea = Idea::updateOrCreate(
                     [
                         'ideaable_id' => $github->id,
                         'ideaable_type' => 'App\Github'
@@ -166,6 +172,22 @@ class UpdateIdeas extends Command
                         'content' => $content,
                     ]
                 );
+
+                // $lowerCaseContent = Str::lower($content);
+
+                $tagsId = collect([]);
+                foreach ($theTags as $theTag) {
+                    // $lowerCaseTagName = Str::lower($theTag->name);
+                    // $containsTags = Str::contains($lowerCaseContent, [$lowerCaseTagName, $theTag->slug]);
+
+                    $containsTags = Str::contains($content, [$theTag->name, $theTag->slug]);
+
+                    if ($containsTags)
+                        $tagsId->push($theTag->id);
+
+                }
+
+                $theIdea->tags()->sync($tagsId);
 
                 $bar->advance();
             }
