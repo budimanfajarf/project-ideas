@@ -14,6 +14,13 @@ class Github extends Model
     protected $fillable = ['name', 'path', 'content_json', 'commits_json', 'committed_at'];
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at', 'committed_at'];
+
+    /**
      * Get the github's idea.
      */
     public function idea()

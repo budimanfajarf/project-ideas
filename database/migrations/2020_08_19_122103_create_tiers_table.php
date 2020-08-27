@@ -16,7 +16,7 @@ class CreateTiersTable extends Migration
         Schema::create('tiers', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('name', 25);
-            $table->string('description', 255)->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

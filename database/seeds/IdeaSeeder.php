@@ -13,7 +13,7 @@ class IdeaSeeder extends Seeder
     {
         $idea = \App\Idea::create([
             'ideaable_id' => 1,
-            'ideaable_type' => 'App\Github',
+            'ideaable_type' => \App\Github::class,
             'tier_id' => 1,
             'name' => 'Example',
             'slug' => 'example',

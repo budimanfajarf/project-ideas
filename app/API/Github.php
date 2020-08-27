@@ -23,6 +23,7 @@ class Github
         $request = Http::withHeaders([
             'Authorization' => "token {$this->token}",
         ])
+        ->timeout(3)
         ->get($url);
 
         $request->throw();

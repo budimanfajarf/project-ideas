@@ -52,7 +52,7 @@ class UpdateIdeas extends Command
         $intermediateTier = Tier::firstOrCreate(['name' => 'Intermediate']);
         $advancedTier = Tier::firstOrCreate(['name' => 'Advanced']);
 
-        $tags = Tag::whereNotIn('name', ['C', 'Gin', 'Java', 'Spring', 'Go', 'Express', 'R'])->take(50)->get();
+        $tags = Tag::whereNotIn('name', ['C', 'Gin', 'Java', 'Spring', 'Go', 'Express', 'R', '.NET'])->take(100)->get();
 
         foreach ($apiProjects as $apiProject) {
             // Temporary Variables
@@ -61,7 +61,7 @@ class UpdateIdeas extends Command
             // Get Tier
             $tmpTier = $apiProject['name'];
 
-            $this->comment($tmpTier);
+            $this->comment("Updating: {$tmpTier} Tier of Project Ideas");
 
             $apiIdeas = $this->githubApi->contents($apiProject['path']);
 
@@ -72,7 +72,7 @@ class UpdateIdeas extends Command
 
             foreach ($apiIdeas as $apiIdea) {
                 if ($apiIdea['type'] != 'file') {
-                    $bar->setMessage("SKIPPED: ".$apiIdea['path']);
+                    $this->error("Skipped: ".$apiIdea['path']);
                     continue;
                 }
 
@@ -154,7 +154,7 @@ class UpdateIdeas extends Command
                 $idea = Idea::updateOrCreate(
                     [
                         'ideaable_id' => $github->id,
-                        'ideaable_type' => 'App\Github'
+                        'ideaable_type' => Github::class
                     ],
                     [
                         'tier_id' => $tier->id,
