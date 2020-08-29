@@ -1,3 +1,7 @@
+# Project Ideas
+
+Web app to help developers find some project ideas for implementing or upgrading skill when learning a new programming language, framework, tech, etc :)
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">
