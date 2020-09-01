@@ -35,7 +35,7 @@ class UpdateIdeas extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->githubApi = new GithubApi('florinpop17', 'app-ideas');
+        $this->githubApi = new GithubApi('florinpop17', 'app-ideas', 10);
     }
 
     /**
@@ -45,6 +45,9 @@ class UpdateIdeas extends Command
      */
     public function handle()
     {
+        $now = now();
+        $this->line("Start Updating Project Ideas from Github API ({$this->githubApi->owner}/{$this->githubApi->repo}) at {$now}");
+
         $apiProjects = $this->githubApi->contents('Projects');
 
         // Get or Create Tier from Database
@@ -185,6 +188,7 @@ class UpdateIdeas extends Command
             $this->line('');
         }
 
-        $this->info("Project Ideas from Github API ({$this->githubApi->owner}/{$this->githubApi->repo}) have been updated! 😘 ☕");
+        $now = now();
+        $this->info("Project Ideas from Github API ({$this->githubApi->owner}/{$this->githubApi->repo}) have been updated! 😘 at {$now} ☕");
     }
 }

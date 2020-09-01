@@ -9,12 +9,13 @@ class Github
     protected $token;
     protected $baseUrl;
 
-    public function __construct($owner = null, $repo = null)
+    public function __construct($owner = null, $repo = null, $timeout=3)
     {
         $this->token = config('services.github.token');
         $this->baseUrl = "https://".config('services.github.endpoint');
         $this->owner = $owner;
         $this->repo = $repo;
+        $this->timeout = $timeout;
     }
 
     public function get($path)
@@ -23,7 +24,7 @@ class Github
         $request = Http::withHeaders([
             'Authorization' => "token {$this->token}",
         ])
-        ->timeout(3)
+        ->timeout($this->timeout)
         ->get($url);
 
         $request->throw();
