@@ -31,6 +31,7 @@ class TagSeeder extends Seeder
             ['name' => 'SQL', 'slug' => $this->getSlug('SQL')],
             ['name' => 'Python', 'slug' => $this->getSlug('Python')],
             ['name' => 'Java', 'slug' => $this->getSlug('Java')],
+            ['name' => 'Bash/Shell/PowerShell', 'slug' => $this->getSlug('Bash/Shell/PowerShell')],
             ['name' => 'C#', 'slug' => $this->getSlug('C sharp')],
             ['name' => 'TypeScript', 'slug' => $this->getSlug('TypeScript')],
             ['name' => 'PHP', 'slug' => $this->getSlug('PHP')],
@@ -57,8 +58,10 @@ class TagSeeder extends Seeder
             ['name' => 'Angular', 'slug' => $this->getSlug('Angular')],
             ['name' => 'ASP.NET', 'slug' => $this->getSlug('ASP.NET')],
             ['name' => 'Express', 'slug' => $this->getSlug('Express')],
+            ['name' => 'ASP.NET Core', 'slug' => $this->getSlug('ASP.NET Core')],
             ['name' => 'Vue.js', 'slug' => $this->getSlug('Vue.js')],
             ['name' => 'Spring', 'slug' => $this->getSlug('Spring')],
+            ['name' => 'Angular.js', 'slug' => $this->getSlug('Angular.js')],
             ['name' => 'Flask', 'slug' => $this->getSlug('Flask')],
             ['name' => 'Django', 'slug' => $this->getSlug('Django')],
             ['name' => 'Laravel', 'slug' => $this->getSlug('Laravel')],
@@ -70,6 +73,7 @@ class TagSeeder extends Seeder
             // Other Framework
             ['name' => 'Node.js', 'slug' => $this->getSlug('Node.js')],
             ['name' => '.NET', 'slug' => $this->getSlug('.NET')],
+            ['name' => '.NET Core', 'slug' => $this->getSlug('.NET Core')],
             ['name' => 'Pandas', 'slug' => $this->getSlug('Pandas')],
             ['name' => 'React Native', 'slug' => $this->getSlug('React Native')],
             ['name' => 'TensorFlow', 'slug' => $this->getSlug('TensorFlow')],
@@ -79,6 +83,13 @@ class TagSeeder extends Seeder
             ['name' => 'Flutter', 'slug' => $this->getSlug('Flutter')],
             ['name' => 'Cordova', 'slug' => $this->getSlug('Cordova')],
             ['name' => 'Xamarin', 'slug' => $this->getSlug('Xamarin')],
+            ['name' => 'Keras', 'slug' => $this->getSlug('Keras')],
+            ['name' => 'Apache Spark', 'slug' => $this->getSlug('Apache Spark')],
+            ['name' => 'Hadoop', 'slug' => $this->getSlug('Hadoop')],
+            ['name' => 'Torch/PyTorch', 'slug' => $this->getSlug('Torch/PyTorch')],
+            ['name' => 'Puppet', 'slug' => $this->getSlug('Puppet')],
+            ['name' => 'Unreal Engine', 'slug' => $this->getSlug('Unreal Engine')],
+            ['name' => 'Chef', 'slug' => $this->getSlug('Chef')],
 
             // Database
             ['name' => 'MySQL', 'slug' => $this->getSlug('MySQL')],
@@ -93,6 +104,8 @@ class TagSeeder extends Seeder
             ['name' => 'Firebase', 'slug' => $this->getSlug('Firebase')],
             ['name' => 'DynamoDB', 'slug' => $this->getSlug('DynamoDB')],
             ['name' => 'Cassandra', 'slug' => $this->getSlug('Cassandra')],
+            ['name' => 'IBM DB2', 'slug' => $this->getSlug('IBM DB2')],
+            ['name' => 'Couchbase', 'slug' => $this->getSlug('Couchbase')],
 
             // Platform
             ['name' => 'Linux', 'slug' => $this->getSlug('Linux')],
@@ -109,6 +122,8 @@ class TagSeeder extends Seeder
             ['name' => 'iOS', 'slug' => $this->getSlug('iOS')],
             ['name' => 'Heroku', 'slug' => $this->getSlug('Heroku')],
             ['name' => 'Arduino', 'slug' => $this->getSlug('Arduino')],
+            // ['name' => 'Slack Apps and Integrations', 'slug' => $this->getSlug('Slack Apps and Integrations')],
+            ['name' => 'IBM Cloud or Watson', 'slug' => $this->getSlug('IBM Cloud or Watson')],
 
             // Custom Added
             ['name' => 'Bootstrap', 'slug' => $this->getSlug('Bootstrap')],

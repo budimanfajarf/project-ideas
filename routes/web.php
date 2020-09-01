@@ -13,22 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', function() {
-    // $ideas = \App\Idea::with(['ideaable', 'tier', 'tags'])->get();
-
-    // dd($ideas[0]['ideaable_type']);
-
-    $ideas = \App\Idea::with(['tags' => function ($query) {
-        $query->select(['name']);
-    }])
-    ->select(['id', 'name', 'short_description'])
-    ->get();
-
-    // dd($ideas);
-
-    return response()->json($ideas);
-});
-
 Route::get('/', function () {
     return view('welcome');
 });

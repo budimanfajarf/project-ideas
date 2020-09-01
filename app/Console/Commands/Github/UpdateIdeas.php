@@ -185,6 +185,6 @@ class UpdateIdeas extends Command
             $this->line('');
         }
 
-        $this->info('Project Ideas from Github API have been updated! 😘 ☕');
+        $this->info("Project Ideas from Github API ({$this->githubApi->owner}/{$this->githubApi->repo}) have been updated! 😘 ☕");
     }
 }
