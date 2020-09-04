@@ -15,6 +15,50 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+* {
+  /* box-sizing: border-box; */
+  /* font-size: 22px; */
+  /* font-family: "Helvetica", sans-serif;
+  color: #333333; */
+}
+
+.example-container {
+  background-color: #f2f2f2;
+  padding: 10px;
+  border: 2px solid #CCCCCC;
+  max-width: 900px;
+  margin: 0 auto;
+  height: 470px;
+  display: flex;
+  flex-flow: column wrap; /* Shorthand – you could use ‘flex-direction: column’ and ‘flex-wrap: wrap’ instead */
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.example-item {
+  background-color: orange;
+  height: 150px;
+  width: 31%;
+  margin: 1%;
+  padding: 10px;
+}
+
+.example-item:nth-child(2) {
+  background-color: pink;
+  height: 250px;
+}
+
+.example-item:nth-child(3) {
+  height: 190px;
+}
+
+.example-item:nth-child(4) {
+  background-color: aqua;
+  height: 220px;
+}
+    </style>
 </head>
 <body>
     <div id="app" class="flex flex-col h-screen justify-between">
@@ -46,7 +90,7 @@
                         </a> --}}
                     </div>
                     <div>
-                        <a href="#" class="inline-block text-base px-4 py-1 md:py-2 rounded text-white bg-teal-500 hover:bg-teal-600 mt-4 md:mt-0">Sign In</a>
+                        {{-- <a href="#" class="inline-block text-base px-4 py-1 md:py-2 rounded text-white bg-teal-500 hover:bg-teal-600 mt-4 md:mt-0">Sign In</a> --}}
                     </div>
                 </div>
             </nav>
@@ -198,7 +242,7 @@
                 </div>
             </section> --}}
 
-            <section class="flex flex-wrap -mx-2 overflow-hidden mt-3">
+            {{-- <section class="flex flex-wrap -mx-2 overflow-hidden mt-3">
                 <div class="py-2 px-2 w-full overflow-hidden sm:w-1/2 lg:w-1/3">
                     <div class="flex bg-white shadow-md rounded-lg"><!--horizantil margin is just for display-->
                         <div class="flex items-start px-4 py-6">
@@ -430,8 +474,29 @@
                 <div class="py-3 px-3 w-full overflow-hidden sm:w-1/2 lg:w-1/3">
                     <!-- Column Content -->
                 </div>
-            </section>
+            </section> --}}
 
+            <div class="example-container">
+                <div class="example-item">1</div>
+                <div class="example-item">2</div>
+                <div class="example-item">3</div>
+                <div class="example-item">4</div>
+                <div class="example-item">5</div>
+                <div class="example-item">6</div>
+            </div>
+
+<!-- Three columns -->
+<div class="flex flex-wrap flex-col justify-start items-start mb-4" style="height: 1000px">
+  <div class="w-1/3 bg-gray-400 h-56">1</div>
+  <div class="w-1/3 bg-gray-500 h-64">2</div>
+  <div class="w-1/3 bg-gray-700 h-40">3</div>
+  <div class="w-1/3 bg-gray-400 h-32">4</div>
+  <div class="w-1/3 bg-gray-500 h-64">5</div>
+  <div class="w-1/3 bg-gray-400 h-56">6</div>
+  <div class="w-1/3 bg-gray-400 h-32">7</div>
+  <div class="w-1/3 bg-gray-500 h-64">8</div>
+  <div class="w-1/3 bg-gray-400 h-56">9</div>
+</div>
         </main>
         <footer class="bg-gray-800 text-white p-5 lg:px-40 text-center text-sm">
             2020 Project Ideas - Made with Laravel + Vue.js + Tailwind
